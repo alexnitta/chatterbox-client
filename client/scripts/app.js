@@ -55,7 +55,7 @@ var escapeMessage = function(messageObj) {
 var app = {};
 app.server = 'https://api.parse.com/1/classes/messages';
 
-var messages = {};
+
 
 var message = {
   username: 'shawndrost',
@@ -67,7 +67,7 @@ var message = {
 app.init = function() {};
 
 app.fetch = function () {
-
+  var messages = {};
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
     url: app.server,
@@ -85,6 +85,7 @@ app.fetch = function () {
       console.error('chatterbox: Failed to retrieve message', data);
     }
   });
+  return messages;
 };
 
 app.send = function(messageObject) {
@@ -116,27 +117,39 @@ app.send = function(messageObject) {
 
 };
 
-app.addMessage = function(messages) {
-  // 
-  setInterval(function() {
-    // put messages.results onto page manipulating DOM
-    app.fetch();
-    for (var i = 5; i >= 0; i--) {
-    //jquery call
-      console.log(messages.results[i]); 
-      var safeMessage = escapeMessage(messages.results[i]);
-      $('#messages').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
-    
-    }
+app.addMessage = function() {
+  var messages = {};
+  $.ajax({
+    // This is the url you should use to communicate with the parse API server.
+    url: app.server,
+    type: 'GET',
+    contentType: 'application/json',
+    success: function (data) {
+      console.log('chatterbox: Message recieved');
+      // if success then check if messages are dangerous 
+      
+      messages = data;
+      for (var i = 5; i >= 0; i--) {
+      //jquery call
+        console.log(messages.results[i]); 
+        var safeMessage = escapeMessage(messages.results[i]);
+        $('#messages').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+      }
+    },
 
-  }, 5000);
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to retrieve message', data);
+    }
+  });
+
 }; 
 
 app.init();
 
-app.fetch();
+setInterval(app.addMessage, 5000);
 
-console.log (messages);  
+
 
 
 
