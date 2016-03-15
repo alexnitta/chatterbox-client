@@ -12,6 +12,9 @@ var escapeMessage = function(messageObj) {
 
   var escapeInput = function (userInput) {
     var results = '';
+    if (userInput === undefined) {
+      return results;
+    }
     var maliciousTypes = /[^a-zA-Z0-9\s\\.\\!\\,\\?]/gi;
 
     for (var i = 0; i < userInput.length; i++) {
@@ -115,16 +118,16 @@ app.send = function(messageObject) {
 
 app.addMessage = function(messages) {
   // 
-  setInterval(function() {
+  // setInterval(function(val) {
     // put messages.results onto page manipulating DOM
-    for (var i; messages.length; i++) {
-      //jquery call 
-      var safeMessage = escapeMessage(message[i]);
-      $('#messages').append('<div class="username">' + safeMessage.username + '</div><div class="chat">' + safeMessage.text + '</div>');
+    for (var i; i < 5; i++) {
+    //jquery call
+      console.log(messages.results[i]); 
+      var safeMessage = escapeMessage(messages.results[i]);
+      $('#messages').append('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
     }
 
-  }, 1000);
-
+  // }, 1000);
 }; 
 
 app.init();
