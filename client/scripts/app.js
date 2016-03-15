@@ -64,8 +64,9 @@ app.fetch = function() {
     contentType: 'application/json',
     success: function (data) {
       console.log('chatterbox: Message received');
+      app.clearMessages();
       messages = data;
-      for (var i = 0; i < messages.results.length; i++) {
+      for (var i = 99; i > 0; i--) {
         var safeMessage = escapeMessage(messages.results[i]);
         $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
       }
@@ -80,8 +81,6 @@ app.fetch = function() {
 
 app.send = function(messageObject) {
 
-  console.log(typeof messageObject);
-  console.log(JSON.stringify(messageObject));
   var defaults = {
     username: 'default',
     text: 'default',
@@ -96,6 +95,7 @@ app.send = function(messageObject) {
     data: JSON.stringify(escapeMessage(messageObject)),
     contentType: 'application/json',
     success: function (data) {
+      app.fetch();
       console.log('chatterbox: Message sent');
     },
     error: function (data) {
@@ -110,11 +110,6 @@ var message = {
   text: 'sai',
   roomname: 'bob'
 };
-
-
-
-
-
 
 
 app.addMessage = function(userInput) {
@@ -151,20 +146,17 @@ app.init = function() {
 };  
 
 app.sendUserMessage = function() {
-  var inputObj = {};
-  inputObj.text = $('input').val();
-  var inputUser = window.location.search;
-  inputUser = inputUser.match(/=(.*)/g);
-  inputUser = inputUser[0];
-  var userLength = inputUser.length;
-  inputUser = inputUser.slice(1, userLength);
-  console.log(inputUser);
+  var userObj = {};
+  userObj.username = window.location.search.substring(10);
+  userObj.text = $('input').val();
+  app.send(userObj);
+
 };
 
 
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
-  $('#saySomething').click(app.sendUserMessage);
+  $('#sendMessage').click(app.sendUserMessage);
 });
 
 setInterval(app.fetch, 5000);
