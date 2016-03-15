@@ -6,7 +6,9 @@ var escapeMessage = function(messageObj) {
     roomname: 'default'
   };
 
-  var messageObj = messageObj || defaults;
+  if (messageObj.text === undefined) {
+    messageObj = defaults;
+  }
 
   var escapeInput = function (userInput) {
     var results = '';
@@ -20,6 +22,7 @@ var escapeMessage = function(messageObj) {
     return results;
   };
 
+  console.log('escapeMessage input: ' + JSON.stringify(messageObj));
   messageObj.username = escapeInput(messageObj.username);
   messageObj.text = escapeInput(messageObj.text);
   messageObj.roomname = escapeInput(messageObj.roomname);
@@ -47,6 +50,8 @@ var escapeMessage = function(messageObj) {
 // Allow users to select a user name for themself and to be able to send messages
 
 var app = {};
+app.server = 'https://api.parse.com/1/classes/messages';
+
 var messages = {};
 
 var message = {
@@ -58,10 +63,11 @@ var message = {
 
 app.init = function() {};
 
-app.retrieve = function () {
+app.fetch = function () {
+
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/messages',
+    url: app.server,
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
@@ -80,6 +86,8 @@ app.retrieve = function () {
 
 app.send = function(messageObject) {
 
+  console.log(typeof messageObject);
+  console.log(JSON.stringify(messageObject));
   var defaults = {
     username: 'default',
     text: 'default',
@@ -90,7 +98,7 @@ app.send = function(messageObject) {
 
   $.ajax({
   // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/messages',
+    url: app.server,
     type: 'POST',
     data: JSON.stringify(escapeMessage(messageObject)),
     contentType: 'application/json',
@@ -104,7 +112,24 @@ app.send = function(messageObject) {
   });
 
 };
+
+app.addMessage = function(messages) {
+  // 
+  setInterval(function() {
+    // put messages.results onto page manipulating DOM
+    for (var i; messages.length; i++) {
+      //jquery call 
+      var safeMessage = escapeMessage(message[i]);
+      $('#messages').append('<div class="username">' + safeMessage.username + '</div><div class="chat">' + safeMessage.text + '</div>');
+    }
+
+  }, 1000);
+
+}; 
+
 app.init();
+
+app.fetch();
 
 console.log (messages);  
 
