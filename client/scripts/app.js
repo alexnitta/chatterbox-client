@@ -25,7 +25,6 @@ var escapeMessage = function(messageObj) {
     return results;
   };
 
-  console.log('escapeMessage input: ' + JSON.stringify(messageObj));
   messageObj.username = escapeInput(messageObj.username);
   messageObj.text = escapeInput(messageObj.text);
   messageObj.roomname = escapeInput(messageObj.roomname);
@@ -64,7 +63,6 @@ var message = {
 };
 // wrap this jQuery call in a function that we can invoke with setInterval
 
-app.init = function() {};
 
 app.fetch = function () {
   var messages = {};
@@ -129,9 +127,8 @@ app.addMessage = function() {
       // if success then check if messages are dangerous 
       
       messages = data;
-      for (var i = 5; i >= 0; i--) {
+      for (var i = 0; i < messages.results.length; i++) {
       //jquery call
-        console.log(messages.results[i]); 
         var safeMessage = escapeMessage(messages.results[i]);
         $('#messages').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
       }
@@ -145,7 +142,17 @@ app.addMessage = function() {
 
 }; 
 
-app.init();
+app.clearMessage = function() {
+  $('#messages').html('');
+};
+
+app.init = function() {
+  app.clearMessage();
+};  
+
+$( document ).ready(function() {
+  $('#clearButton').click(app.init);
+});
 
 setInterval(app.addMessage, 5000);
 
