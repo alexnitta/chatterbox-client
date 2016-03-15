@@ -54,17 +54,9 @@ var escapeMessage = function(messageObj) {
 var app = {};
 app.server = 'https://api.parse.com/1/classes/messages';
 
-
-
-var message = {
-  username: 'shawndrost',
-  text: 'trololo',
-  roomname: '4chan'
-};
 // wrap this jQuery call in a function that we can invoke with setInterval
 
-
-app.fetch = function () {
+app.fetch = function() {
   var messages = {};
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
@@ -72,10 +64,15 @@ app.fetch = function () {
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
-      console.log('chatterbox: Message recieved');
+      console.log('chatterbox: Message received');
       // if success then check if messages are dangerous 
       
       messages = data;
+      for (var i = 0; i < messages.results.length; i++) {
+      //jquery call
+        var safeMessage = escapeMessage(messages.results[i]);
+        $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+      }
     },
 
     error: function (data) {
@@ -84,7 +81,7 @@ app.fetch = function () {
     }
   });
   return messages;
-};
+}; 
 
 app.send = function(messageObject) {
 
@@ -115,25 +112,25 @@ app.send = function(messageObject) {
 
 };
 
-app.addMessage = function() {
-  var messages = {};
+var message = {
+  username: 'alex',
+  text: 'sai',
+  roomname: 'bob'
+};
+
+app.addMessage = function(userInput) {
+  var safeInput = escapeMessage(userInput);
+  console.log(safeInput);
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
     url: app.server,
-    type: 'GET',
+    type: 'POST',
+    data: JSON.stringify(safeInput),
     contentType: 'application/json',
     success: function (data) {
-      console.log('chatterbox: Message recieved');
-      // if success then check if messages are dangerous 
-      
-      messages = data;
-      for (var i = 0; i < messages.results.length; i++) {
-      //jquery call
-        var safeMessage = escapeMessage(messages.results[i]);
-        $('#messages').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
-      }
+      console.log('chatterbox: Message received');
+      app.fetch();
     },
-
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('chatterbox: Failed to retrieve message', data);
@@ -141,20 +138,24 @@ app.addMessage = function() {
   });
 
 }; 
+// have an input field to add new messageData 
+  // uses POST 
+  // displays message on
 
-app.clearMessage = function() {
-  $('#messages').html('');
+
+app.clearMessages = function() {
+  $('#chats').html('');
 };
 
 app.init = function() {
-  app.clearMessage();
+  app.clearMessages();
 };  
 
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
 });
 
-setInterval(app.addMessage, 5000);
+// setInterval(app.fetch, 5000);
 
 
 

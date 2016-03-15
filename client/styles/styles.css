@@ -5,7 +5,7 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#main {
     width: 500px;
     margin: auto;
     text-align: left;
@@ -46,7 +46,7 @@ body {
     line-height: 13px;
 }
 
-#messages {
+#chats {
     margin-top: 10px;
 }
 
