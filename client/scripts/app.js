@@ -54,7 +54,6 @@ var escapeMessage = function(messageObj) {
 var app = {};
 app.server = 'https://api.parse.com/1/classes/messages';
 
-// wrap this jQuery call in a function that we can invoke with setInterval
 
 app.fetch = function() {
   var messages = {};
@@ -65,18 +64,14 @@ app.fetch = function() {
     contentType: 'application/json',
     success: function (data) {
       console.log('chatterbox: Message received');
-      // if success then check if messages are dangerous 
-      
       messages = data;
       for (var i = 0; i < messages.results.length; i++) {
-      //jquery call
         var safeMessage = escapeMessage(messages.results[i]);
         $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
       }
     },
 
     error: function (data) {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('chatterbox: Failed to retrieve message', data);
     }
   });
@@ -96,7 +91,6 @@ app.send = function(messageObject) {
   var messageObject = messageObject || defaults;
 
   $.ajax({
-  // This is the url you should use to communicate with the parse API server.
     url: app.server,
     type: 'POST',
     data: JSON.stringify(escapeMessage(messageObject)),
@@ -105,7 +99,6 @@ app.send = function(messageObject) {
       console.log('chatterbox: Message sent');
     },
     error: function (data) {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('chatterbox: Failed to send message', data);
     }
   });
@@ -117,6 +110,12 @@ var message = {
   text: 'sai',
   roomname: 'bob'
 };
+
+
+
+
+
+
 
 app.addMessage = function(userInput) {
   var safeInput = escapeMessage(userInput);
@@ -151,11 +150,24 @@ app.init = function() {
   app.clearMessages();
 };  
 
+app.sendUserMessage = function() {
+  var inputObj = {};
+  inputObj.text = $('input').val();
+  var inputUser = window.location.search;
+  inputUser = inputUser.match(/=(.*)/g);
+  inputUser = inputUser[0];
+  var userLength = inputUser.length;
+  inputUser = inputUser.slice(1, userLength);
+  console.log(inputUser);
+};
+
+
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
+  $('#saySomething').click(app.sendUserMessage);
 });
 
-// setInterval(app.fetch, 5000);
+setInterval(app.fetch, 5000);
 
 
 

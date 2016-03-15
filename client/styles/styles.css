@@ -62,6 +62,10 @@ body {
     cursor: pointer;
 }
 
+#saySomething {
+    margin-top: 25px;
+}
+
 form {
     padding: 20px;
     padding-left: 0;
