@@ -118,16 +118,18 @@ app.send = function(messageObject) {
 
 app.addMessage = function(messages) {
   // 
-  // setInterval(function(val) {
+  setInterval(function() {
     // put messages.results onto page manipulating DOM
-    for (var i; i < 5; i++) {
+    app.fetch();
+    for (var i = 5; i >= 0; i--) {
     //jquery call
       console.log(messages.results[i]); 
       var safeMessage = escapeMessage(messages.results[i]);
-      $('#messages').append('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+      $('#messages').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+    
     }
 
-  // }, 1000);
+  }, 5000);
 }; 
 
 app.init();
