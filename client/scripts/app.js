@@ -1,3 +1,9 @@
+// Objectives
+
+// Display messages retrieved from the parse server.
+// Use proper escaping on any user input. 
+// Allow users to select a user name for themself and to be able to send messages
+
 var escapeMessage = function(messageObj) {
 
   var defaults = {
@@ -33,23 +39,6 @@ var escapeMessage = function(messageObj) {
 
 };
 
-// Display messages retrieved from the parse server.
-
-// Use proper escaping on any user input. 
-// Since you're displaying input that other users have typed, your app is vulnerable XSS attacks. 
-// See the section about escaping below.
-
-// Note: If you issue an XSS attack, you must make it innocuous enough to be educational, 
-// rather than disruptive. Basically you should scope your attacks to be console.logs or minor style changes. 
-// The following are not allowed:
-
-// alerts
-// adding or removing dom elements
-// auto-posting
-// DDOS attacks
-// Setup a way to refresh the displayed messages (either automatically or with a button)
-
-// Allow users to select a user name for themself and to be able to send messages
 
 var app = {};
 app.server = 'https://api.parse.com/1/classes/messages';
@@ -81,7 +70,6 @@ app.fetch = function() {
       }
 
       //adding roomname 
-        // 
 
       $('#roomname').html('');  
       $('#roomname').append($('<option>', {  
@@ -90,10 +78,20 @@ app.fetch = function() {
       }, '</option>'));
 
       for (var key in rooms) {
-        $('#roomname').append($('<option>', {  
-          value: key, 
-          text: key
-        }, '</option>'));
+        if (key !== undefined && key !== '') {
+          if (key === app.room) {
+            $('#roomname').append($('<option>', {  
+              selected: 'selected',
+              value: key, 
+              text: key
+            }, '</option>'));
+          } else {
+            $('#roomname').append($('<option>', {  
+              value: key, 
+              text: key
+            }, '</option>'));
+          }
+        }
       }
     },
 
@@ -132,13 +130,9 @@ app.send = function(messageObject) {
 
 };
 
-var message = {
-  username: 'alex',
-  text: 'sai',
-  roomname: 'bob'
-};
-
-
+// have an input field to add new messageData 
+  // uses POST 
+  // displays message on
 app.addMessage = function(userInput) {
   var safeInput = escapeMessage(userInput);
   console.log(safeInput);
@@ -159,9 +153,6 @@ app.addMessage = function(userInput) {
   });
 
 }; 
-// have an input field to add new messageData 
-  // uses POST 
-  // displays message on
 
 
 app.clearMessages = function() {
@@ -174,17 +165,18 @@ app.init = function() {
 };  
 
 app.sendUserMessage = function() {
+
   var userObj = {};
   userObj.username = window.location.search.substring(10);
-  userObj.text = $('input').val();
+  userObj.text = $('#saySomething input').val();
   app.send(userObj);
 
 };
 
 app.addRoom = function() {
   var someObj = {};
-  //someObj.room = ;
-  someObj.roomname = $('input').val();
+  someObj.roomname = $('#addRoom input').val();
+  console.log('add room: ' + someObj.roomname);
   $('#roomname').append($('<option>', {  
     value: someObj.roomname, 
     text: someObj.roomname
@@ -194,10 +186,15 @@ app.addRoom = function() {
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
   $('#sendMessage').click(app.sendUserMessage);
+
+  // start somewhere on roomname
+
+  // updates the room when the list selection changes
   $('#roomname').on('change', function() {
     app.room = $(this).val();
     app.fetch();
   });
+
   $('#addingRoom').click(app.addRoom);
 });
 

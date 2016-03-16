@@ -24,6 +24,10 @@ body {
     color: deepskyblue;
 }
 
+#header {
+    background-color: white;
+}
+
 #main h1 span {
     font-style:italic;
 }
