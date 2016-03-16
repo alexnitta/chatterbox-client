@@ -43,6 +43,7 @@ var escapeMessage = function(messageObj) {
 var app = {};
 app.server = 'https://api.parse.com/1/classes/messages';
 
+app.friendsArr = [];
 
 app.fetch = function() {
   var messages = {};
@@ -58,7 +59,10 @@ app.fetch = function() {
       var rooms = {};
       for (var i = 99; i > 0; i--) {
         var safeMessage = escapeMessage(messages.results[i]);
-        rooms[safeMessage.roomname] = safeMessage.roomname; 
+        rooms[safeMessage.roomname] = safeMessage.roomname;
+        if (app.friendsArr.includes(safeMessage.username)) {
+          $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat friend">' + safeMessage.text + '</div>');  
+        } 
         if (app.room === 'All Rooms') {
           console.log('matched All Rooms');
           $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');  
@@ -194,6 +198,16 @@ $( document ).ready(function() {
     app.room = $(this).val();
     app.fetch();
   });
+
+  // add a user to friendsArr
+
+  
+
+  $('#main').on('click', '.username', (function() {
+    app.friendsArr.push($(this).val());
+    app.fetch();
+    //bold that username's text 
+  }));
 
   $('#addingRoom').click(app.addRoom);
 });

@@ -101,6 +101,10 @@ form input[type=text] {
     font-weight: 800;
 }
 
+.username .friend {
+    font-style: bold;
+}
+
 .chat:hover {
     background-color: #ddd;
 }
