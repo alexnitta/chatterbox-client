@@ -16,10 +16,12 @@ body {
 }
 
 #main h1 {
+    text-align: center;
     margin-top: 0;
-    font-size: 35px;
+    font-size: 55px;
     margin-bottom: 5px;
     padding: 5px;
+    color: deepskyblue;
 }
 
 #main h1 span {
@@ -63,7 +65,7 @@ body {
 }
 
 #clearButton:hover {
-    background-color: teal;
+    background-color: limegreen;
     cursor: pointer;
 }
 

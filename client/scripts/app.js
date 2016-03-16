@@ -87,13 +87,13 @@ app.fetch = function() {
       $('#roomname').append($('<option>', {  
         value: 'All Rooms', 
         text: 'All Rooms'
-      }));
+      }, '</option>'));
 
       for (var key in rooms) {
         $('#roomname').append($('<option>', {  
           value: key, 
           text: key
-        }));
+        }, '</option>'));
       }
     },
 
@@ -103,6 +103,8 @@ app.fetch = function() {
   });
   return messages;
 }; 
+
+
 
 app.send = function(messageObject) {
 
@@ -179,7 +181,15 @@ app.sendUserMessage = function() {
 
 };
 
-
+app.addRoom = function() {
+  var someObj = {};
+  //someObj.room = ;
+  someObj.roomname = $('input').val();
+  $('#roomname').append($('<option>', {  
+    value: someObj.roomname, 
+    text: someObj.roomname
+  }, '</option>'));
+};
 
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
@@ -188,6 +198,7 @@ $( document ).ready(function() {
     app.room = $(this).val();
     app.fetch();
   });
+  $('#addingRoom').click(app.addRoom);
 });
 
 setInterval(app.fetch, 5000);
