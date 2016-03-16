@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>chatterbox</title>
+    <title>Chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
 
     <!-- dependencies -->
@@ -14,13 +14,24 @@
   </head>
   <body>
     <div id="main">
-      <h1>chatterbox</h1>
-    
-      <div><span id="clearButton">Clear All Messages</span></div>
+      <h1>chatterbox</h1>  
+      Select A Room:
+      <select id="roomname">
+        <option value="All Rooms">All Rooms</option>
+        </select>
+      <div id="roomSelect"> 
+       <div id="addRoom">
+       Add A Room:   <input type="text" name="roomAdd">
+       <span id="addingRoom"><input type="submit" value="Submit"></span>
+       </div>
+<!--         <input type="text" name="room" list="productName"/> -->
+      
+      </div>  
       <div id="saySomething">
-       Say Something: <input type="text" name="words">
+       Say Some Stuff: <input type="text" name="words">
       <span id="sendMessage"><input type="submit" value="Submit"></span>
       </div>
+      <div><span id="clearButton">Clear All Messages</span></div>
       <div id="chats">
       </div>
     </div>

@@ -66,9 +66,34 @@ app.fetch = function() {
       console.log('chatterbox: Message received');
       app.clearMessages();
       messages = data;
+      var rooms = {};
       for (var i = 99; i > 0; i--) {
         var safeMessage = escapeMessage(messages.results[i]);
-        $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+        rooms[safeMessage.roomname] = safeMessage.roomname; 
+        if (app.room === 'All Rooms') {
+          console.log('matched All Rooms');
+          $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');  
+        } 
+        if (safeMessage.roomname === app.room) {
+          console.log('matched: ' + app.room);
+          $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
+        }
+      }
+
+      //adding roomname 
+        // 
+
+      $('#roomname').html('');  
+      $('#roomname').append($('<option>', {  
+        value: 'All Rooms', 
+        text: 'All Rooms'
+      }));
+
+      for (var key in rooms) {
+        $('#roomname').append($('<option>', {  
+          value: key, 
+          text: key
+        }));
       }
     },
 
@@ -84,7 +109,7 @@ app.send = function(messageObject) {
   var defaults = {
     username: 'default',
     text: 'default',
-    roomname: 'default'
+    roomname: 'lobby'
   };
 
   var messageObject = messageObject || defaults;
@@ -143,6 +168,7 @@ app.clearMessages = function() {
 
 app.init = function() {
   app.clearMessages();
+  app.room = 'All Rooms';
 };  
 
 app.sendUserMessage = function() {
@@ -154,9 +180,14 @@ app.sendUserMessage = function() {
 };
 
 
+
 $( document ).ready(function() {
   $('#clearButton').click(app.init);
   $('#sendMessage').click(app.sendUserMessage);
+  $('#roomname').on('change', function() {
+    app.room = $(this).val();
+    app.fetch();
+  });
 });
 
 setInterval(app.fetch, 5000);

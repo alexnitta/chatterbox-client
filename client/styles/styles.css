@@ -50,6 +50,11 @@ body {
     margin-top: 10px;
 }
 
+#roomSelect {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
 #clearButton {
     background-color: deepskyblue;
     color: white;
@@ -64,6 +69,7 @@ body {
 
 #saySomething {
     margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 form {
