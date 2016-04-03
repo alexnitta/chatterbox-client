@@ -48,7 +48,6 @@ app.friendsArr = [];
 app.fetch = function() {
   var messages = {};
   $.ajax({
-    // This is the url you should use to communicate with the parse API server.
     url: app.server,
     type: 'GET',
     contentType: 'application/json',
@@ -72,15 +71,12 @@ app.fetch = function() {
           $('#chats').prepend('<div class="username">' + safeMessage.username + ':</div><div class="chat">' + safeMessage.text + '</div>');
         }
       }
-
       //adding roomname 
-
       $('#roomname').html('');  
       $('#roomname').append($('<option>', {  
         value: 'All Rooms', 
         text: 'All Rooms'
       }, '</option>'));
-
       for (var key in rooms) {
         if (key !== undefined && key !== '') {
           if (key === app.room) {
@@ -98,26 +94,21 @@ app.fetch = function() {
         }
       }
     },
-
     error: function (data) {
       console.error('chatterbox: Failed to retrieve message', data);
     }
   });
   return messages;
-}; 
-
+}; // end of app.fetch method
 
 
 app.send = function(messageObject) {
-
   var defaults = {
     username: 'default',
     text: 'default',
     roomname: 'lobby'
   };
-
   var messageObject = messageObject || defaults;
-
   $.ajax({
     url: app.server,
     type: 'POST',
@@ -131,17 +122,15 @@ app.send = function(messageObject) {
       console.error('chatterbox: Failed to send message', data);
     }
   });
-
 };
 
 // have an input field to add new messageData 
   // uses POST 
-  // displays message on
+  // displays messages on success
 app.addMessage = function(userInput) {
   var safeInput = escapeMessage(userInput);
   console.log(safeInput);
   $.ajax({
-    // This is the url you should use to communicate with the parse API server.
     url: app.server,
     type: 'POST',
     data: JSON.stringify(safeInput),
@@ -155,7 +144,6 @@ app.addMessage = function(userInput) {
       console.error('chatterbox: Failed to retrieve message', data);
     }
   });
-
 }; 
 
 
@@ -169,12 +157,10 @@ app.init = function() {
 };  
 
 app.sendUserMessage = function() {
-
   var userObj = {};
   userObj.username = window.location.search.substring(10);
   userObj.text = $('#saySomething input').val();
   app.send(userObj);
-
 };
 
 app.addRoom = function() {
@@ -187,31 +173,23 @@ app.addRoom = function() {
   }, '</option>'));
 };
 
-$( document ).ready(function() {
+$(document).ready(function() {
   $('#clearButton').click(app.init);
   $('#sendMessage').click(app.sendUserMessage);
-
-  // start somewhere on roomname
-
   // updates the room when the list selection changes
   $('#roomname').on('change', function() {
     app.room = $(this).val();
     app.fetch();
   });
-
   // add a user to friendsArr
-
-  
-
   $('#main').on('click', '.username', (function() {
     app.friendsArr.push($(this).val());
     app.fetch();
-    //bold that username's text 
   }));
-
   $('#addingRoom').click(app.addRoom);
 });
 
+// fetch new messages every 5 seconds
 setInterval(app.fetch, 5000);
 
 
